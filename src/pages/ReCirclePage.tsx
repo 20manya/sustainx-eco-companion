@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useEcoMiles } from '@/hooks/useEcoMiles';
 import { recyclableItems, diyIdeas, recyclingCenters } from '@/data/sustainabilityData';
 import { RecycleItem } from '@/types/sustainx';
 import { StatCard } from '@/components/shared/StatCard';
@@ -11,6 +12,7 @@ import { cn } from '@/lib/utils';
 
 export default function ReCirclePage() {
   const [recycleItems, setRecycleItems] = useLocalStorage<RecycleItem[]>('recycleItems', []);
+  const { earnPoints } = useEcoMiles();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'check' | 'diy' | 'centers' | 'tracker'>('check');
   const [searchResult, setSearchResult] = useState<{ found: boolean; item?: typeof recyclableItems[string] & { name: string } } | null>(null);
@@ -22,6 +24,8 @@ export default function ReCirclePage() {
     );
     if (found) {
       setSearchResult({ found: true, item: { ...found[1], name: found[0] } });
+      // Award EcoMiles for checking recyclability
+      earnPoints('recycle_check');
     } else {
       setSearchResult({ found: false });
     }

@@ -1,6 +1,8 @@
 import { useMemo, useEffect, useState } from 'react';
-import { Leaf, Recycle, ShoppingBag, Flame, Sparkles } from 'lucide-react';
+import { Leaf, Recycle, ShoppingBag, Flame, Sparkles, Gift, Crown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useEcoMiles } from '@/hooks/useEcoMiles';
 import { dailyTips, badges as defaultBadges } from '@/data/sustainabilityData';
 import { EcoScoreRing } from '@/components/shared/EcoScoreRing';
 import { CategoryCard } from '@/components/shared/CategoryCard';
@@ -12,6 +14,7 @@ export default function HomePage() {
   const [wasteLogs] = useLocalStorage<WasteLog[]>('wasteLogs', []);
   const [badges] = useLocalStorage<Badge[]>('badges', defaultBadges);
   const [streak] = useLocalStorage<number>('streak', 0);
+  const { totalPoints, todayEarned, currentTier } = useEcoMiles();
   const [tipIndex, setTipIndex] = useState(0);
 
   useEffect(() => {
@@ -58,15 +61,40 @@ export default function HomePage() {
                  ecoScore >= 40 ? 'Good start, log more!' : 
                  'Start logging to boost your score!'}
               </p>
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-accent" />
-                <span className="text-xs text-muted-foreground">
-                  {badges.filter(b => b.earned).length} badges earned
-                </span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-accent" />
+                  <span className="text-xs text-muted-foreground">
+                    {badges.filter(b => b.earned).length} badges
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Gift className="w-4 h-4 text-primary" />
+                  <span className="text-xs text-muted-foreground">
+                    +{todayEarned} pts today
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* EcoMiles Quick Card */}
+        <Link to="/rewards" className="block mt-4">
+          <div className="bg-card/80 backdrop-blur-sm rounded-xl p-4 shadow-soft border border-primary-foreground/10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">{currentTier.icon}</span>
+              <div>
+                <p className="text-sm font-medium text-foreground">{currentTier.name}</p>
+                <p className="text-xs text-muted-foreground">{totalPoints.toLocaleString()} EcoMiles</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-primary text-sm font-medium">
+              <Crown className="w-4 h-4" />
+              View Rewards
+            </div>
+          </div>
+        </Link>
       </header>
 
       <div className="px-5 py-6 space-y-6">

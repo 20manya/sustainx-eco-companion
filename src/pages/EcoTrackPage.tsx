@@ -3,6 +3,7 @@ import { ArrowLeft, Plus, Apple, Droplets, Zap, Package, Calendar, TrendingDown 
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useEcoMiles } from '@/hooks/useEcoMiles';
 import { WasteLog, ExpiryItem } from '@/types/sustainx';
 import { StatCard } from '@/components/shared/StatCard';
 import { ProgressBar } from '@/components/shared/ProgressBar';
@@ -13,15 +14,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn } from '@/lib/utils';
 
 const logCategories = [
-  { type: 'food', icon: Apple, label: 'Food Waste', unit: 'kg', color: 'text-destructive', bg: 'bg-destructive/10' },
-  { type: 'plastic', icon: Package, label: 'Plastic Usage', unit: 'items', color: 'text-accent', bg: 'bg-accent/10' },
-  { type: 'water', icon: Droplets, label: 'Water Usage', unit: 'L', color: 'text-eco-water', bg: 'bg-eco-water/10' },
-  { type: 'electricity', icon: Zap, label: 'Electricity', unit: 'kWh', color: 'text-eco-leaf', bg: 'bg-eco-leaf/10' },
+  { type: 'food', icon: Apple, label: 'Food Waste', unit: 'kg', color: 'text-destructive', bg: 'bg-destructive/10', action: 'food_log' as const },
+  { type: 'plastic', icon: Package, label: 'Plastic Usage', unit: 'items', color: 'text-accent', bg: 'bg-accent/10', action: 'plastic_log' as const },
+  { type: 'water', icon: Droplets, label: 'Water Usage', unit: 'L', color: 'text-eco-water', bg: 'bg-eco-water/10', action: 'water_log' as const },
+  { type: 'electricity', icon: Zap, label: 'Electricity', unit: 'kWh', color: 'text-eco-leaf', bg: 'bg-eco-leaf/10', action: 'electricity_log' as const },
 ];
 
 export default function EcoTrackPage() {
   const [wasteLogs, setWasteLogs] = useLocalStorage<WasteLog[]>('wasteLogs', []);
   const [expiryItems, setExpiryItems] = useLocalStorage<ExpiryItem[]>('expiryItems', []);
+  const { earnPoints } = useEcoMiles();
   const [isLogDialogOpen, setIsLogDialogOpen] = useState(false);
   const [isExpiryDialogOpen, setIsExpiryDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'logs' | 'expiry' | 'report'>('logs');
@@ -56,6 +58,12 @@ export default function EcoTrackPage() {
       notes: newLog.notes,
     };
     setWasteLogs(prev => [log, ...prev]);
+    
+    // Award EcoMiles based on log type
+    if (category) {
+      earnPoints(category.action);
+    }
+    
     setNewLog({ type: 'food', amount: '', notes: '' });
     setIsLogDialogOpen(false);
   };

@@ -1,4 +1,4 @@
-import { Home, Leaf, Recycle, ShoppingBag, User } from 'lucide-react';
+import { Home, Leaf, Recycle, ShoppingBag, Gift, User } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { cn } from '@/lib/utils';
 
@@ -7,6 +7,7 @@ const navItems = [
   { to: '/ecotrack', icon: Leaf, label: 'EcoTrack' },
   { to: '/recircle', icon: Recycle, label: 'ReCircle' },
   { to: '/greencart', icon: ShoppingBag, label: 'GreenCart' },
+  { to: '/rewards', icon: Gift, label: 'Rewards' },
   { to: '/profile', icon: User, label: 'Profile' },
 ];
 
