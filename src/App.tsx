@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import EcoTrackPage from "./pages/EcoTrackPage";
 import ReCirclePage from "./pages/ReCirclePage";
 import GreenCartPage from "./pages/GreenCartPage";
+import RewardsPage from "./pages/RewardsPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/ecotrack" element={<EcoTrackPage />} />
             <Route path="/recircle" element={<ReCirclePage />} />
             <Route path="/greencart" element={<GreenCartPage />} />
+            <Route path="/rewards" element={<RewardsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

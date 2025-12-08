@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { ArrowLeft, User, Settings, History, Award, ChevronRight, Trash2 } from 'lucide-react';
+import { ArrowLeft, User, Settings, History, Award, ChevronRight, Trash2, Gift, Crown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useEcoMiles } from '@/hooks/useEcoMiles';
 import { badges as defaultBadges } from '@/data/sustainabilityData';
 import { UserProfile, Badge, WasteLog, WishlistItem, RecycleItem } from '@/types/sustainx';
 import { EcoScoreRing } from '@/components/shared/EcoScoreRing';
@@ -28,6 +29,7 @@ export default function ProfilePage() {
   const [wishlist] = useLocalStorage<WishlistItem[]>('wishlist', []);
   const [recycleItems] = useLocalStorage<RecycleItem[]>('recycleItems', []);
   const [streak] = useLocalStorage<number>('streak', 0);
+  const { totalPoints, currentTier, nextTier, tierProgress, transactions, redeemedRewards } = useEcoMiles();
   
   const [activeTab, setActiveTab] = useState<'profile' | 'badges' | 'history' | 'settings'>('profile');
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -116,6 +118,39 @@ export default function ProfilePage() {
       <div className="px-5 py-6">
         {activeTab === 'profile' && (
           <div className="space-y-6 animate-slide-up">
+            {/* EcoMiles Card */}
+            <Link to="/rewards" className="block">
+              <div className="bg-gradient-to-r from-primary/10 to-eco-leaf/10 rounded-2xl p-4 border border-primary/20">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">{currentTier.icon}</span>
+                    <div>
+                      <p className="font-semibold">{currentTier.name}</p>
+                      <p className="text-sm text-muted-foreground">{totalPoints.toLocaleString()} EcoMiles</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-muted-foreground">Rewards redeemed</p>
+                    <p className="text-xl font-bold text-primary">{redeemedRewards.length}</p>
+                  </div>
+                </div>
+                {nextTier && (
+                  <div className="mt-3">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-muted-foreground">Progress to {nextTier.name}</span>
+                      <span className="text-primary">{tierProgress}%</span>
+                    </div>
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-primary to-eco-leaf rounded-full"
+                        style={{ width: `${tierProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Link>
+
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-card rounded-2xl p-4 border text-center">
@@ -150,6 +185,7 @@ export default function ProfilePage() {
               <BadgeDisplay badges={badges} />
             </div>
           </div>
+
         )}
 
         {activeTab === 'badges' && (

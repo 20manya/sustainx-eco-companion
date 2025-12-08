@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
-import { ArrowLeft, Star, Heart, Package, Leaf, TrendingUp, Plus } from 'lucide-react';
+import { ArrowLeft, Star, Heart, Package, Leaf, TrendingUp, Plus, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useEcoMiles } from '@/hooks/useEcoMiles';
 import { ecoProducts } from '@/data/sustainabilityData';
 import { WishlistItem } from '@/types/sustainx';
 import { EcoScoreRing } from '@/components/shared/EcoScoreRing';
@@ -14,6 +15,7 @@ import { cn } from '@/lib/utils';
 
 export default function GreenCartPage() {
   const [wishlist, setWishlist] = useLocalStorage<WishlistItem[]>('wishlist', []);
+  const { earnPoints } = useEcoMiles();
   const [activeTab, setActiveTab] = useState<'products' | 'wishlist' | 'score'>('products');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newItem, setNewItem] = useState({ name: '', category: 'Personal Care', ecoScore: 80, notes: '' });
@@ -29,6 +31,14 @@ export default function GreenCartPage() {
       addedDate: new Date().toISOString(),
     };
     setWishlist(prev => [item, ...prev]);
+    // Award EcoMiles for adding to wishlist
+    earnPoints('wishlist_add');
+  };
+
+  const handleChooseReusable = (product: typeof ecoProducts[0]) => {
+    // Award EcoMiles for choosing reusable alternative
+    earnPoints('reusable_choice');
+    handleAddToWishlist(product);
   };
 
   const handleAddCustomItem = () => {
@@ -42,6 +52,7 @@ export default function GreenCartPage() {
       addedDate: new Date().toISOString(),
     };
     setWishlist(prev => [item, ...prev]);
+    earnPoints('wishlist_add');
     setNewItem({ name: '', category: 'Personal Care', ecoScore: 80, notes: '' });
     setIsDialogOpen(false);
   };
@@ -136,11 +147,11 @@ export default function GreenCartPage() {
                     <Button
                       variant={inWishlist ? 'secondary' : 'soft'}
                       size="sm"
-                      onClick={() => handleAddToWishlist(product)}
+                      onClick={() => handleChooseReusable(product)}
                       disabled={inWishlist}
                     >
                       <Heart className={cn('w-4 h-4', inWishlist && 'fill-current')} />
-                      {inWishlist ? 'Added' : 'Wishlist'}
+                      {inWishlist ? 'Added' : 'Choose'}
                     </Button>
                   </div>
                 </div>
