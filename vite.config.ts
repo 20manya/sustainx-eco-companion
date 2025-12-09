@@ -5,7 +5,6 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/sustainx-eco-companion/",   // IMPORTANT for GitHub Pages
 
   plugins: [
     react(),
