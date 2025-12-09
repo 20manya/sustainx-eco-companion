@@ -84,6 +84,6 @@ npm run dev
 
 ## Authors
 
-Menaka V
-Manya Priya K
+Menaka V |
+Manya Priya K |
 Mohammad Imtiyaz
