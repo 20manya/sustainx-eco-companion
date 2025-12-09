@@ -1,15 +1,11 @@
-import { ReactNode } from 'react';
 import { BottomNav } from './BottomNav';
+import { Outlet } from 'react-router-dom';
 
-interface AppLayoutProps {
-  children: ReactNode;
-}
-
-export function AppLayout({ children }: AppLayoutProps) {
+export function AppLayout() {
   return (
     <div className="min-h-screen bg-background gradient-nature">
       <main className="pb-24">
-        {children}
+        <Outlet />
       </main>
       <BottomNav />
     </div>
