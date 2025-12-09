@@ -10,6 +10,7 @@ import ReCirclePage from "./pages/ReCirclePage";
 import GreenCartPage from "./pages/GreenCartPage";
 import RewardsPage from "./pages/RewardsPage";
 import ProfilePage from "./pages/ProfilePage";
+import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,17 +21,18 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppLayout>
-          <Routes>
+        <Routes>
+          <Route path="/auth" element={<AuthPage />} />
+          <Route element={<AppLayout />}>
             <Route path="/" element={<Index />} />
             <Route path="/ecotrack" element={<EcoTrackPage />} />
             <Route path="/recircle" element={<ReCirclePage />} />
             <Route path="/greencart" element={<GreenCartPage />} />
             <Route path="/rewards" element={<RewardsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AppLayout>
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
