@@ -5,14 +5,21 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  server: {
-    host: "::",
-    port: 8080,
-  },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  base: "/sustainx-eco-companion/",   // IMPORTANT for GitHub Pages
+
+  plugins: [
+    react(),
+    mode === "development" && componentTagger(), // only runs in dev
+  ].filter(Boolean),
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+
+  server: {
+    host: "::",
+    port: 8080,
   },
 }));
